@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:18            # PostgreSQL 18 Docker image, Image name, like a class, pulled from docker hub
+    container_name: grabseat-db   # Name of the container, Like Object's name, used in docker commands
+    environment:
+      POSTGRES_DB: grabseat       # Database name
+      POSTGRES_USER: grabseat     # Database username
+      POSTGRES_PASSWORD: grabseat # Database password (local development only)
+
+    ports:
+      - "5432:5432"                # Host port : Container port
+
+    volumes:
+      - postgres_storage:/var/lib/postgresql # Store database data permanently
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U grabseat -d grabseat" ]
+      interval: 5s  # Check every 5 seconds
+      timeout: 3s   # Wait up to 3 seconds for each check
+      retries: 5    # Mark unhealthy after 5 failed checks
+
+volumes:
+  postgres_storage: # Named volume for database data - Data survival
